@@ -115,13 +115,54 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
+        # First Create a list of args to get the class_name then kwargs
+        # I do this because args if of type string, meaning that any parameter
+        # passed after create is interprated as one argument. Confirm below
+        # print(type(args))
+        # Using this cmd as an example: create State name="pandaland" user="panda"
+
+        params = args.split()
+        class_name = params[0]
+        # print("Class is {}".format(class_name))
+        if not class_name:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        elif class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
+        
+        # Then, I split arguments from the first argument to remain with kwargs
+        params = args.split()[1:]
+        print("Params received: {}".format(params))
+
+        # Create a dictionary to store the kwargs
+        kwargs = {}
+
+        # Loop through the list of parameters (params) and extract the key and
+        # value
+        for param in params:
+            if "=" not in param:
+                continue
+            key, value = param.split("=")
+            if value.startswith("") and value.endswith(""):
+                # Replace '_' with spaces by excludeing the 1st and last character of the str
+                value = value[1:-1].replace('_',' ')
+                value = value.replace('\"', '""')
+            # Check for float value ie., contains '.'
+            elif '.' in value:
+                try:
+                    value = float(value)       
+                except ValueError:
+                    continue
+            # Check for int value, i.e., default value
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            kwargs[key] = value
+        # Create an instance
+        new_instance = HBNBCommand.classes[class_name]()
         storage.save()
         print(new_instance.id)
         storage.save()
