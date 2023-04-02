@@ -133,7 +133,7 @@ class HBNBCommand(cmd.Cmd):
         
         # Then, I split arguments from the first argument to remain with kwargs
         params = args.split()[1:]
-        print("Params received: {}".format(params))
+        # print("Params received: {}".format(params))
 
         # Create a dictionary to store the kwargs
         kwargs = {}
